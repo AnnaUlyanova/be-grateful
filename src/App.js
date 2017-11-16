@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import fire, { auth, provider } from './fire';
+import propEq from 'ramda/src/propEq';
+import filter from 'ramda/src/filter';
 
 //import LoginForm from './components/LoginForm'
 
@@ -63,7 +65,7 @@ class App extends Component {
   handleChange(e) {
     this.setState({
       currentText: e.target.value,
-      date: new Date().getHours() //create function for Date!
+      date: new Date().getTime()
     });
   }
 
@@ -98,6 +100,7 @@ class App extends Component {
     messagesRef.once('value', (snapshot) => {
 
       let messages = snapshot.val();
+      console.log('Messages from FB', messages)
       let newState = [];
       for (let message in messages) {
         newState.push({
@@ -106,6 +109,13 @@ class App extends Component {
           date: messages[message].date,
         })
       }
+      console.log('New State from FB', newState)
+      const todayDate = new Date();
+      const isTodaysDate = propEq('date', 17)
+      const todaysMessages = filter(isTodaysDate, newState)
+
+      console.log('todaysMessages filtered', todaysMessages)
+
       this.setState({
         messages: newState
       })
